@@ -1,0 +1,8 @@
+###parameters that should be adjusted most of the time ###
+param_names: ["Planet_radius"]
+predict_name: ["Planet_mass"]
+data_path: "test_data.csv"
+test_indices: [0,2]
+###Specific parameters make sure you understand what they do before changing them ###
+batch_size: 100  # how many predictions TabPFN runs in parallel if it is too high you will get a memory error 
+
