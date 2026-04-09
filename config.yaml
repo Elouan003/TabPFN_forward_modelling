@@ -4,14 +4,16 @@
 #the file should be placed in the data/input folder 
 data_path: "tab_style_input.txt"
 
-Headers: True 
 
-separator: "\t"
+
+#input_format tells the code if it should expect data separated by tabs "\t" or commas "," 
+#change this according to the format of your data 
+input_format: "\t"
 
 
 #param_names should be a list of the interior parameters that are used as a input for the forward model 
 
-param_names: ["boundary_pressure","boundary_temp","atmosph_mass[M_earth]","water_mass[M_earth]","core_mass[M_earth]","light_alloy_fraction","Fe_Si_mantle_mass_ratio","Mg_Si_mantle_mass_ratio","Luminosity[cgs]","Z_envelope","mixing","age[yrs]"]
+param_names: ["boundary_pressure","boundary_temp","atmosph_mass[M_earth]","water_mass[M_earth]","core_mass[M_earth]","light_alloy_fraction","Fe_Si_mantle_mass_ratio","Mg_Si_mantle_mass_ratio","Luminosity[cgs]","Z_envelope","mixing","age[Gyrs]"]
 
 #predict name should be the name of the (only one !) parameter you want TabPFN to train to predict from the interior parameters 
 predict_name: ["R_tot[R_earth]"]
@@ -27,8 +29,11 @@ predict_name: ["R_tot[R_earth]"]
 test_indices: [0,0] 
 
 
-output_format: "plot" # can be set to plot or csv depe
 
+# The code always outputs a csv file with the points predicted by TabPFN and the true value such that you can make use of it as you like 
+#if this parameter is true it will also create the standard plot and save it 
+# to disable it set output_plot to False 
+output_plot: True
 
 
 
