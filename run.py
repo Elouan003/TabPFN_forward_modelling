@@ -2,18 +2,20 @@ import argparse
 import yaml 
 import pandas as pd 
 import numpy as np
-from progress.bar import Bar
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from tabpfn import TabPFNRegressor
 from pathlib import Path
+import matplotlib.pyplot as plt 
+from src.plot import R_plot
+from src.help import progress_bar,load_config
+
+
+
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# loads parameters from config file 
-def load_config(path=BASE_DIR / "config.yaml") : 
-    with open(path, "r") as f:
-        return yaml.safe_load(f)
+
     
 def main(): 
     #1. Read parameter file 
@@ -23,18 +25,16 @@ def main():
     #...
 
     #2. Read csv file 
-    data  = pd.read_csv(BASE_DIR  / data_path ,sep = ",")
+    data  = pd.read_csv(BASE_DIR/ "data" / "input"  / data_path, sep = "\s+", index_col=False)
+    
 
     print("The following columns where recognized : ", data.columns.tolist())
     print("If some are missing see the csv_format section of the REAMDE file")
-
-     
-
+    
 
 
     #checks for errors in spelling or naming of parameters to avoid pandas errors down the line 
     mandatory_columns = config["param_names"] + config["predict_name"]
-  
     for col in mandatory_columns:
         if col not in data.columns:
             print(f"Error : The column '{col}' does not exist in the data file. Make sure your data is formateed as specified in README.txt")
@@ -42,8 +42,8 @@ def main():
             return  # 
         
     #3. Split the data frame into parameters that are to be  predicted or are  given
-    predict = data[config["predict_name"]]
-    interior_parameters = data.drop(config["predict_name"], axis=1)
+    predict = data[config["predict_name"][0]]
+    interior_parameters = data.drop(config["predict_name"][0], axis=1)
     print(np.ravel(predict.values))
     
 
@@ -68,8 +68,7 @@ def main():
         predict_test = predict.iloc[test_indices]
         predict_train = predict.drop(index=test_indices)
 
-    print(predict_test)
-    print(interior_test)
+   
 
 
     #5. Make the TabPFN fit 
@@ -79,20 +78,36 @@ def main():
 
     #6. Run the predctions in a batch 
     batch_size = 100   # try 100–500 depending on memory
-    predictions = []
+    pfn_predictions = []
 
     for i in range(0, len(predict_test), batch_size):
         batch = interior_test[i:i + batch_size]
         preds = reg.predict(batch)
-        predictions.append(preds)
+        pfn_predictions.append(preds)
+        #progress_bar(i,)
     
 
-    predictions = np.concatenate(predictions)
-
-    print(predictions)
+    pfn_predictions = np.concatenate(pfn_predictions)
 
 
 
+
+    #6. Make the validation plot of R_predicted against R_control 
+    pred_name = config["predict_name"][0]
+    R_plot(predict_test,pfn_predictions,f"TabPFN predicted {pred_name} vs test values")
+
+
+    #7. Save  R_predicted and R_control so that the user can have acces to the data and plot is as he likes 
+    
+    df_output = pd.DataFrame({
+        "True R ": predict_test,
+        "Tab_pfn R": pfn_predictions
+    })
+
+    output_path = BASE_DIR / "data" / "output" / "test"
+    output_path.parent.mkdir(exist_ok=True)
+    df_output.to_csv(output_path, index=False)  
+    
 
    
 

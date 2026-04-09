@@ -1,14 +1,26 @@
-###parameters that should be adjusted most of the time ###
-
-#param_names should be a list of the inerior parameters that are used as a input for the forward model 
-param_names: ["Planet_mass"]
-
-#predict name should be the name of the (only one !) parameter you want TabPFN to train to predict from the interior parameters 
-predict_name: ["Planet_radius"]
+###Input file parameters ###
 
 #data_path should be the name of the file containing your data (training and testing) 
 #the file should be placed in the data/input folder 
-data_path: "test_data.csv"
+data_path: "tab_style_input.txt"
+
+Headers: True 
+
+separator: "\t"
+
+
+#param_names should be a list of the interior parameters that are used as a input for the forward model 
+
+param_names: ["boundary_pressure","boundary_temp","atmosph_mass[M_earth]","water_mass[M_earth]","core_mass[M_earth]","light_alloy_fraction","Fe_Si_mantle_mass_ratio","Mg_Si_mantle_mass_ratio","Luminosity[cgs]","Z_envelope","mixing","age[yrs]"]
+
+#predict name should be the name of the (only one !) parameter you want TabPFN to train to predict from the interior parameters 
+predict_name: ["R_tot[R_earth]"]
+
+
+
+
+
+### Functional parameters###
 
 # test_indices specifies which planets are used to test the predictions capabilities if nothing is specifed 20% will be selected at random
 # note that they are the same from run to run for reproducability, you can change the random seed in the specific parameters 
@@ -20,8 +32,13 @@ output_format: "plot" # can be set to plot or csv depe
 
 
 
-###Specific parameters make sure you understand what they do before changing them ###
-batch_size: 100  # how many predictions TabPFN runs in parallel if it is too high you will get a memory error 
+###Performance and consistancy related parameters make sure you understand what they do before changing them ###
 
+ # batch_size sets how many predictions TabPFN runs in parallel if it is too high you will get a memory error 
+batch_size: 100 
+
+
+# random_seed sets a fixed seed in the selection of which samples are used for testing so that the results are reprodcuible 
+#if you specify tets_indices above this has no use 
 random_seed: 42
 
