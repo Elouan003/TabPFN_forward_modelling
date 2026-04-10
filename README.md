@@ -20,6 +20,7 @@ cd project_name
 ```
  
 **2. Create the python environement**
+
 *a. Using conda*
 ```bash
 conda create -n nom_env python=3.10
@@ -28,22 +29,53 @@ pip install -r requirements.txt
 ```
 
 *b. Using venv*
- 
+
+On Mac/Linux
+```bash
+python3 -m venv TabPFN_env
+source TabPFN_env/bin/activate
+pip install -r requirements.txt
+```
+
+On Windows 
+
+
+```bash
+python -m venv TabPFN_env
+TabPFN_env\Scripts\activate
+pip install -r requirements.txt
+```
+
+
 **3. Launch the script **
 ```bash
 python run.py
 ```
 
 Every time you want to run the programm make sure that the virtual environment is activated ! 
-This is done by running 
+This is done by running the middle line of the procedure explained above.
+
+Using conda 
+
 ```bash
 conda activate TabPFN_env
 ```
 
+Without conda on Mac/Linux
+
+```bash
+conda activate TabPFN_env
+```
+
+Without conda on Windows 
+
+```bash
+conda activate TabPFN_env
+```
  
 ---
  
-## 2. Fonctionnement
+## 2. Running the script
  
 ### a) Prepare your data 
  
