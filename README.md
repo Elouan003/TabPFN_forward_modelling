@@ -1,100 +1,113 @@
-# Nom du projet
+# TabPFN forwawrd modelling 
  
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cet outil permet de charger un fichier de données, d'entraîner un modèle de régression et de générer automatiquement un graphique ainsi qu'un fichier CSV de résultats exploitables.
+ This repository contains the code necessary to fit the TabPFN model to a part of your training data set and make predictions for the rest of the data points. The data used for the fitting are normally the interior parameters of the planet such as core/mantel mass, water mass fraction or Mg to Si mantle mass ratio but can also be extended to more general parameters of the planet such as age or different types of mixing assumptions. 
+
  
 ---
  
-## 1. Installation & Lancement
+## 1. Installation & start
  
-### Prérequis
+### Prerequisits 
 - [Git](https://git-scm.com/)
-- [Conda](https://docs.conda.io/en/latest/miniconda.html)
+- [Conda](https://docs.conda.io/en/latest/miniconda.html) (optional)
  
-### Étapes
+### Steps 
  
-**1. Cloner le repository**
+**1. Clone the repository in the desired folder**
 ```bash
 git clone https://github.com/votre-repo/nom-du-projet.git
-cd nom-du-projet
+cd project_name 
 ```
  
-**2. Créer l'environnement Python**
+**2. Create the python environement**
+*a. Using conda*
 ```bash
 conda create -n nom_env python=3.10
 conda activate nom_env
 pip install -r requirements.txt
 ```
+
+*b. Using venv*
  
-**3. Lancer le script**
+**3. Launch the script **
 ```bash
 python run.py
 ```
- 
-Le script vous guidera ensuite interactivement dans la console.
+
+Every time you want to run the programm make sure that the virtual environment is activated ! 
+This is done by running 
+```bash
+conda activate TabPFN_env
+```
+
  
 ---
  
 ## 2. Fonctionnement
  
-### a) Préparer ses données
+### a) Prepare your data 
  
-Placez votre fichier de données dans le dossier `data/input/` :
+Place your data set in the  `data/input/` folder  :
  
 ```
 nom-du-projet/
 └── data/
     └── input/
-        └── votre_fichier.csv   ← ici
+        └── your_data.csv   ← here
 ```
  
-Le fichier peut être au format `.csv` ou `.txt`. Les colonnes doivent correspondre aux paramètres définis dans `config.yaml` (voir section 3).
+The data should be in  `.csv` or `.txt` format . Les columns should include at least  the parameters you define in `config.yaml` (see section 3) if there are more columns than what you are using that is fine the programm should ignore them. 
  
-> **Format supporté :** colonnes séparées par des tabulations ou des espaces, avec ou sans header commenté (lignes commençant par `#`).
+> **Supported fromats :** The script can either work with columns separated by tabs/spaces or by commas, in order to adapt this see the "separator" parameter in config.yaml(section 3). The names of the columns should be the first line of the data and use the same separators as the rest of the data.
  
-### b) Configurer `config.yaml`
+### b) Configurate `config.yaml`
  
-Avant de lancer le script, ouvrez `config.yaml` et renseignez les paramètres selon vos besoins. Les paramètres sont détaillés dans la section 3 ci-dessous.
+This is the most important part of these instructions. The `config.yaml` file containes three sets of parameters that need to be adjusted depending on your needs. The different parameters are explained below. 
+
+### Data related parametres
+| Parameter | Type | Description |
+|---|---|---|
+| `data_path` | `string` | Name of the file in `data/input/` |
+| `input_format` | `string` | Type of separator used in your data file can be either `\s+` or `,`| 
+| `Param_names` | `list` | Name of the columns that are to be used as parameters |
+| `Predict_names` | `list` | Name of the column that is to be predicetd (usually Radius) |
+
+---
+
+### Programm related parametres
+| Parameter | Type | Description |
+|---|---|---|
+| `test_indices` | `list [start, end]` | Intervall of lines to be used to test the precision of rhe predictions If nothing is specified, the code will use a random sample with 20% of your data for the testing. The random sample stas the same through different runs for reproducibility|
+| `batch_size` | `int` | Number of TabPFN predictions that are run in parallel (default 100). Increasing this number will make the code run faster but if the available memory is not enough it will crash so thread carefully. |
+| `random_seed` | `int` | In order to have reprducible outputs the random test points are selected based on a seed. You can change this seed here|
+---
  
+
+
+### Output related parametres
+| Parameter | Type | Description |
+|---|---|---|
+| `make_plot` | `bool` |  | True if you want to generate the pdf plot everytime False if you only want the csv data
+| `output_csv` | `string` | Name of csv file generated in `output/csv/` |
+| `output_pdf` | `string` | Name of pdf plot generated in `output/plots/` |
+---
+ 
+
+
 ### c) Outputs générés
  
-Le script génère automatiquement deux fichiers dans le dossier `output/` :
+The script automaticall generates two files in the  `output/` folder :
  
-| Fichier | Description |
+| File | Description |
 |---|---|
-| `results.pdf` | Graphique des résultats |
-| `results.csv` | Données brutes pour vos propres analyses |
+| `results.pdf` | Automatically generated plot of the TabPFN predictions against the true values for validation|
+| `results.csv` | csv file with 2 columns : the frist one is the true values from your data set and the second one are the corresponding values predicted by TabPFN. This can be used to generate your own plots with the data if the automatic one does not meet your needs.|
  
-```
-nom-du-projet/
-└── output/
-    ├── results.pdf
-    └── results.csv
-```
+
  
 ---
  
-## 3. Paramètres du fichier `config.yaml`
- 
-```yaml
-data_path: "votre_fichier.csv"     # Nom du fichier dans data/input/
-Param_names: ["col1", "col2"]      # Colonnes utilisées comme variables d'entrée
-Predict_names: ["col3"]            # Colonne à prédire
-test_indices: [0, 10]              # Indices des lignes utilisées pour le test
-output_csv: "results.csv"          # Nom du fichier CSV de sortie
-output_pdf: "results.pdf"          # Nom du fichier PDF de sortie
-```
- 
-| Paramètre | Type | Description |
-|---|---|---|
-| `data_path` | `string` | Nom du fichier de données dans `data/input/` |
-| `Param_names` | `liste` | Noms des colonnes utilisées comme features |
-| `Predict_names` | `liste` | Nom de la colonne cible à prédire |
-| `test_indices` | `liste [début, fin]` | Intervalle de lignes réservé au test. Si absent, un split aléatoire est utilisé |
-| `output_csv` | `string` | Nom du fichier CSV généré dans `output/` |
-| `output_pdf` | `string` | Nom du fichier PDF généré dans `output/` |
- 
----
- 
+
 ## 4. Conseils d'utilisation
  
 **Vérifier les colonnes reconnues**
