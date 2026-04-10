@@ -1,4 +1,4 @@
-###Input file parameters ###
+###Data related parameters ###
 
 #data_path should be the name of the file containing your data (training and testing) 
 #the file should be placed in the data/input folder 
@@ -22,28 +22,37 @@ predict_name: ["R_tot[R_earth]"]
 
 
 
-### Functional parameters###
+### Programm related parameters###
 
 # test_indices specifies which planets are used to test the predictions capabilities if nothing is specifed 20% will be selected at random
 # note that they are the same from run to run for reproducability, you can change the random seed in the specific parameters 
 test_indices: [0,0] 
 
-
-
-# The code always outputs a csv file with the points predicted by TabPFN and the true value such that you can make use of it as you like 
-#if this parameter is true it will also create the standard plot and save it 
-# to disable it set output_plot to False 
-output_plot: True
-
-
-
-###Performance and consistancy related parameters make sure you understand what they do before changing them ###
-
- # batch_size sets how many predictions TabPFN runs in parallel if it is too high you will get a memory error 
+# batch_size sets how many predictions TabPFN runs in parallel if it is too high you will get a memory error 
 batch_size: 100 
-
 
 # random_seed sets a fixed seed in the selection of which samples are used for testing so that the results are reprodcuible 
 #if you specify tets_indices above this has no use 
 random_seed: 42
+
+
+
+### Output related parameters###
+
+
+# The code always outputs a csv file with the points predicted by TabPFN and the true value such that you can make use of it as you like 
+# if this parameter is true it will also create the standard plot and save it 
+# to disable it set output_plot to False 
+make_plot: True
+
+
+# output_csv sets the name of the file produced in output/csv containing the raw results 
+output_csv: "results.csv"
+
+# output_pdf sets the name of the file produced in output/csv containing the raw results 
+output_pdf: "results.pdf"
+
+
+
+
 

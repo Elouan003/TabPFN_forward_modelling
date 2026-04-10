@@ -110,7 +110,7 @@ You should always set the parameters regarding your data ! Without this the code
 | Parameter | Type | Description | default value |
 |---|---|---|---|
 | `data_path` | `string` | Name of the file in `data/input/` | None 
-| `input_format` | `string` | Type of separator used in your data file can be either `\s+` or `,`| \s+
+| `input_format` | `string` | Type of separator used in your data file can be `\s+` or `,`| \s+
 | `Param_names` | `list` | Name of the columns that are to be used as parameters | None 
 | `Predict_names` | `list` | Name of the column that is to be predicetd (usually Radius) | None 
 
@@ -136,16 +136,7 @@ You should always set the parameters regarding your data ! Without this the code
  
 
 
-### c) Generated outputs
- 
-The script automatically generates two files in the  `output/` folder :
- 
-| File | Description |
-|---|---|
-| `results.pdf` | Automatically generated plot of the TabPFN predictions against the true values for validation|
-| `results.csv` | csv file with 2 columns : the first one is the true values from your data set and the second one are the corresponding values predicted by TabPFN. This can be used to generate your own plots with the data if the automatic one does not meet your needs.|
-
-### d) Run the script 
+### c) Run the script 
 Once everything is set up, run 
 
 ```bash
@@ -153,6 +144,15 @@ python run.py
 ```
 In the `TabPFN_forward_modelling` folder on your computer. The script will show updates of the progress and signal the more common errors that might occur.
 
+
+### d) Generated outputs
+
+The script automatically generates two files in the  `output/` folder :
+ 
+| File | Description |
+|---|---|
+| `results.pdf` | Automatically generated plot of the TabPFN predictions against the true values for validation|
+| `results.csv` | csv file with 2 columns : the first one is the true values from your data set and the second one are the corresponding values predicted by TabPFN. This can be used to generate your own plots with the data if the automatic one does not meet your needs.|
 
  
 

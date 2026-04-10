@@ -26,6 +26,7 @@ def main():
     #...
 
     #2. Read csv file 
+    print("\n# Loading your data ..")
     data  = pd.read_csv(BASE_DIR/ "data" / "input"  / data_path, sep = "\s+", index_col=False)
  
     
@@ -82,14 +83,15 @@ def main():
 
 
     #6. Run the predctions in a batch 
-    batch_size = 100   # try 100–500 depending on memory
+    batch_size = config["batch_size"]  # try 100–500 depending on memory
     pfn_predictions = []
     print("\n# TabPFN predictions :  ")
     for i in range(0, len(predict_test), batch_size):
+        progress_bar(i,len(predict_test)//batch_size*100)
         batch = interior_test[i:i + batch_size]
         preds = reg.predict(batch)
         pfn_predictions.append(preds)
-        progress_bar(i,len(predict_test)//batch_size*100)
+        
     
 
     pfn_predictions = np.concatenate(pfn_predictions)
@@ -98,9 +100,10 @@ def main():
 
 
     #6. Make the validation plot of R_predicted against R_control 
-    if(config["output_plot"]):
+    if(config["make_plot"]):
+        filename = BASE_DIR/ "data" / "output"  / "plots" / config["output_pdf"]
         pred_name = config["predict_name"][0]
-        R_plot(predict_test,pfn_predictions,f"TabPFN predicted {pred_name} vs test values")
+        R_plot(predict_test,pfn_predictions,f"TabPFN predicted {pred_name} vs test values",filename)
 
 
     #7. Save the Radii predicted by TabPFN and the "True" Radii so that the user can have acces to the data and plot is as he likes 
@@ -110,12 +113,12 @@ def main():
         "Tab_pfn R": pfn_predictions
     })
 
-    output_path = BASE_DIR / "data" / "output" / "csv" / "test"
+    output_path = BASE_DIR / "data" / "output" / "csv" / config["output_csv"]
     output_path.parent.mkdir(exist_ok=True)
     df_output.to_csv(output_path, index=False)  
     
 
-   
+    print("\nDONE :) ")
 
 if __name__ == "__main__":
     main()

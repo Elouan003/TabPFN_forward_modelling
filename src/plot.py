@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 
-def R_plot(prediction,validation,Title):
+def R_plot(prediction,validation,Title,Filename):
     # add MSE ??? 
     plt.figure(figsize=(10, 8))
     ax = plt.gca()
@@ -12,6 +12,5 @@ def R_plot(prediction,validation,Title):
     plt.title(Title)
     plt.ylabel("Radius predicted by TabPFN in Earth radii", fontsize=12)
     plt.xlabel("Validation radius in Earth radii", fontsize=12)
-    
     plt.legend()
-    plt.show()
+    plt.savefig(Filename)
