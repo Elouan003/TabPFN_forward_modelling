@@ -9,6 +9,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt 
 from src.plot import R_plot
 from src.help import progress_bar,load_config
+from src.help import validate_config
 
 
 
@@ -21,6 +22,8 @@ def main():
     #1. Read parameter file 
     config = load_config()
     data_path = config["data_path"]
+    if not (validate_config(config)): 
+        return 
    
     #...
     #...
