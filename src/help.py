@@ -40,7 +40,7 @@ def validate_config(config):
         print("❌ Error : the following parameters where not given in  config.yaml :\n")
         for e in errors:
             print(e)
-        print("\n→ Please edit config.yaml before realaunching the script. More informatin on the config.yaml file can be found in READEM.md")
+        print("\n→ Please edit config.yaml before realaunching the script. More informatin on the config.yaml file can be found in READMEßß.md")
         return False
     
     return True

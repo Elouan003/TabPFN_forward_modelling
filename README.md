@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 On Mac/Linux
 ```bash
-python3 -m venv TabPFN_env
+python3.10 -m venv TabPFN_env
 source TabPFN_env/bin/activate
 pip install -r requirements.txt
 ```
@@ -49,37 +49,11 @@ On Windows
 
 
 ```bash
-python -m venv TabPFN_env
+py -3.10 -m venv TabPFN_env
 TabPFN_env\Scripts\activate
 pip install -r requirements.txt
 ```
-
-
-**3. Launch the script**
-```bash
-python run.py
-```
-
-Every time you want to run the programm make sure that the virtual environment is activated ! 
-This is done by running the middle line of the procedure explained above.
-
-Using conda 
-
-```bash
-conda activate TabPFN_env
-```
-
-Without conda on Mac/Linux
-
-```bash
-source TabPFN_env/bin/activate
-```
-
-Without conda on Windows 
-
-```bash
-TabPFN_env\Scripts\activate
-```
+> **Important** The  2 versions using venv require you to have python 3.10 installed on your computer. If it is not clear to you how to do this look into brew, pyenv or conda as recommended above.
  
 ---
  
@@ -145,7 +119,30 @@ python run.py
 In the `TabPFN_forward_modelling` folder on your computer. The script will show updates of the progress and signal the more common errors that might occur.
 
 
-### d) Generated outputs
+Every time you want to run the programm make sure that the virtual environment is activated ! 
+This is done by running the middle line of the procedure explained above.
+
+Using conda 
+
+```bash
+conda activate TabPFN_env
+```
+
+Without conda on Mac/Linux
+
+```bash
+source TabPFN_env/bin/activate
+```
+
+Without conda on Windows 
+
+```bash
+TabPFN_env\Scripts\activate
+```
+
+
+
+## 3. Generated outputs
 
 The script automatically generates two files in the  `output/` folder :
  
