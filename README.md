@@ -3,6 +3,8 @@
  
  This repository contains the code necessary to fit the TabPFN model to a part of your training data set and make predictions for the rest of the set. The data used for the fitting are normally the interior parameters of the planet such as core/mantel mass, water mass fraction or Mg to Si mantle mass ratio but can also be extended to more general parameters of the planet such as age or different types of mixing assumptions. 
 
+ The code also allows for single planet predictions based on the traing data set. This is explained further in section 4.
+
 
 ---
 ## TabPFN Version  
