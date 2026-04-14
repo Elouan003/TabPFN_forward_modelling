@@ -157,20 +157,27 @@ The script automatically generates two files in the  `output/` folder :
 ---
  
 
-## 4.  Notes and recommendations 
+## 4.  Single planet predictions 
  
- ### Modify the configuration for your use
+Once the model has been fitted and the plot has been produced the programm will propmt you to choose if you want to make a prediction for a single planet. 
+```bash
+Do you want to make a single planet prediction ? (y/n) :
+```
 
-The `config.yaml` file is where you can set all the parameters for the code. Take some time to read through the different parameters and what they do. This part is central to understanding and using this code. 
+If you decide to do so it will then ask you for a value for each of the parameters that was used to fit the TabPFN regression model.
  
-### In case of missing/not recognized column
-The script will automatically produce an error message, if this is the case, telling you which parameters it could not find in the data. Check the spelling and casing of the parameters as well as the `input_format` parameter you are using.
- 
-### Choose your testing indices
-`test_indices: [0, 100]` uses the 100 first lines as test for the models predictions. If you dont specify these the script will pick 20% of the lines at random to use for testing.
- 
-### Using the raw results for your own work/plots
-The file produced in  `output/csv/` contains all necessary data for you to conduct your own analysis of the mode precision. The first columns contains the reals values of the parameter that was to predict, and the second column the values predicted for TabPFN.  
- 
+```bash
+Enter a value for 'log_d_mantle_core' : 0.1
+Enter a value for 'log_d_atmosphere_core' : 0.2
+Enter a value for 'core_rf' : 0.34
+Enter a value for 'atmosphere_rf' : 0.124
+Enter a value for 'atmosphere_mf' : 0.234
+Enter a value for 'mantle_mf' : 0.55
+...
+```
 
- 
+Once every parameter has been entered TabPFN will predict the value that it has been trained for (radius or other) and output it directly in the console
+```bash
+Predicted planet_radius: 2.683711051940918
+```
+

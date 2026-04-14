@@ -37,10 +37,10 @@ def validate_config(config):
         errors.append("  - 'predict_name' is empty : specify which column is to be predicted in config.yaml")
 
     if errors:
-        print("❌ Error : the following parameters where not given in  config.yaml :\n")
+        print("❌ Error : the following parameters were not given in  config.yaml :\n")
         for e in errors:
             print(e)
-        print("\n→ Please edit config.yaml before realaunching the script. More informatin on the config.yaml file can be found in READMEßß.md")
+        print("\n→ Please edit config.yaml before realaunching the script. More information on the config.yaml file can be found in README.md")
         return False
     
     return True

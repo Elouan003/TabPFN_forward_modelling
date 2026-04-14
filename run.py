@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from src.plot import R_plot
 from src.help import progress_bar,load_config
 from src.help import validate_config
-
+import torch
 
 
 
@@ -30,29 +30,28 @@ def main():
 
     #2. Read csv file 
     print("\n# Loading your data ..")
-    data  = pd.read_csv(BASE_DIR/ "data" / "input"  / data_path, sep = "\s+", index_col=False)
+    data  = pd.read_csv(BASE_DIR/ "data" / "input"  / data_path, sep = config["input_format"], index_col=False)
  
     
 
- 
     
-
+    
+    
 
     #checks for errors in spelling or naming of parameters to avoid pandas errors down the line 
     mandatory_columns = config["param_names"] + config["predict_name"]
     for col in mandatory_columns:
         if col not in data.columns:
-            print(f"Error : The column '{col}' does not exist in the data file. Make sure your data is formateed as specified in README.txt")
+            print(f"Error : The column '{col}' does not exist in the data file. Make sure your data is formatted as specified in README.txt")
             print(f"Available columns : {data.columns.tolist()}")
             return  # 
     print()
     print("# File loaded succesfully \n ")
-
         
     #3. Split the data frame into parameters that are to be  predicted or are  given
     predict = data[config["predict_name"][0]]
-    interior_parameters = data.drop(config["predict_name"][0], axis=1)
-  
+    interior_parameters = data[config["param_names"]]
+
     
 
     #4. Split into train and test samples either randomly or with indices given at input 
@@ -77,7 +76,18 @@ def main():
 
    
 
+    #Warn for slow use in case of CPU for many samples 
+    if torch.cuda.is_available():
+        device = "cuda"       # Windows/Linux Nvidia
+    elif torch.backends.mps.is_available():
+        device = "mps"        # Mac Apple Silicon
+    else:
+        device = "cpu"
 
+    print(f"→ Using : {device}")
+
+    if device == "cpu" and len(interior_train) > 1000:
+        print("⚠️  Warning : dataset > 1000 lines on CPU, computing can be slow.")
     #5. Make the TabPFN fit 
     
     reg = TabPFNRegressor()
@@ -94,7 +104,7 @@ def main():
         batch = interior_test[i:i + batch_size]
         preds = reg.predict(batch)
         pfn_predictions.append(preds)
-        
+    progress_bar(1,1)
     
 
     pfn_predictions = np.concatenate(pfn_predictions)
@@ -103,10 +113,12 @@ def main():
 
 
     #6. Make the validation plot of R_predicted against R_control 
+    pred_name = config["predict_name"][0]
     if(config["make_plot"]):
         filename = BASE_DIR/ "data" / "output"  / "plots" / config["output_pdf"]
-        pred_name = config["predict_name"][0]
-        R_plot(predict_test,pfn_predictions,f"TabPFN predicted {pred_name} vs test values",filename)
+        
+    
+        R_plot(predict_test,pfn_predictions,pred_name,filename)
 
 
     #7. Save the Radii predicted by TabPFN and the "True" Radii so that the user can have acces to the data and plot is as he likes 
@@ -122,6 +134,37 @@ def main():
     
 
     print("\nDONE :) ")
+
+    def predict(args): 
+     
+        
+        parameters =np.array(args)
+        if  not len(args) == len(config["param_names"]) :
+            print("\nParameter mismatch : the number of values must match 'param_names' in config.yaml" )
+        parameters = parameters.reshape(1,-1)
+        df = pd.DataFrame(parameters, columns=config["param_names"])
+        
+
+        return  reg.predict(df)
+    print("\n ---Single planet prediction---")
+    answer = input("Do you want to make a single planet prediction? (y/n) : ").strip().lower()
+    if answer != 'y':
+        return
+
+    # 2) Demande une valeur pour chaque nom de la liste
+    
+    values = []
+
+    for name in config["param_names"]:
+        while True:  # Boucle pour forcer une valeur numérique valide
+            try:
+                val = float(input(f"Enter a value for '{name}' : "))
+                values.append(val)
+                break
+            except ValueError:
+                print("  !!  Please enter a numerical value")
+
+    print(f"\nPredicted {pred_name}: {predict(values)[0]}")
 
 if __name__ == "__main__":
     main()

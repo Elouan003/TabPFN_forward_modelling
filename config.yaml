@@ -8,15 +8,15 @@ data_path: ""
 
 #input_format tells the code if it should expect data separated by tabs "\t" or commas "," 
 #change this according to the format of your data 
-input_format: "\t"
+input_format: ","
 
 
 #param_names should be a list of the interior parameters that are used as a input for the forward model 
 
-param_names: [""]
+param_names: []
 
 #predict name should be the name of the (only one !) parameter you want TabPFN to train to predict from the interior parameters 
-predict_name: [""]
+predict_name: []
 
 
 
