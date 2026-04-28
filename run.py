@@ -2,6 +2,7 @@ import argparse
 import yaml 
 import pandas as pd 
 import numpy as np
+import random 
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from tabpfn import TabPFNRegressor
@@ -57,23 +58,27 @@ def main():
     #4. Split into train and test samples either randomly or with indices given at input 
     if(config["test_indices"][0]==config["test_indices"][1]) : #checks if user specified a range of test indices 
         print("# No test indices specified using random train/test split ")
-        
+        size_data_set = len(np.ravel(predict.values))
+        test_sample_size = (size_data_set-500)/size_data_set
         interior_train, interior_test, predict_train, predict_test = train_test_split(
         #np.ravel(interior_parameters),
         interior_parameters,
         np.ravel(predict.values),
-        test_size=  0.2,
+        test_size =  test_sample_size,
         random_state= 42,# Stays the same for reproducibility  
         )
     else : #use user specified subset for the testing of the training 
         test_indices = list(range(config["test_indices"][0], config["test_indices"][1]))
-
+     
+        
         interior_test = interior_parameters.iloc[test_indices]
         interior_train = interior_parameters.drop(index=test_indices)
+        idx = np.random.choice(len(interior_train), min(500, len(interior_train)), replace=False)
+        interior_train = interior_train.iloc[idx]
 
         predict_test = predict.iloc[test_indices]
         predict_train = predict.drop(index=test_indices)
-
+        predict_train = predict_train.iloc[idx]
    
 
     #Warn for slow use in case of CPU for many samples 
@@ -86,11 +91,11 @@ def main():
 
     print(f"→ Using : {device}")
 
-    if device == "cpu" and len(interior_train) > 1000:
+    if device == "cpu" and len(interior_test) > 1000:
         print("⚠️  Warning : dataset > 1000 lines on CPU, computing can be slow.")
     #5. Make the TabPFN fit 
     
-    reg = TabPFNRegressor()
+    reg = TabPFNRegressor(device = device,ignore_pretraining_limits=True)
     reg.fit(interior_train,predict_train)
     print("\n# TabPFN regressor fitted ")
 

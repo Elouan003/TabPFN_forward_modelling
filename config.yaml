@@ -49,7 +49,7 @@ make_plot: True
 # output_csv sets the name of the file produced in output/csv containing the raw results 
 output_csv: "results.csv"
 
-# output_pdf sets the name of the file produced in output/csv containing the raw results 
+# output_pdf sets the name of the file produced in output/plot   
 output_pdf: "results.pdf"
 
 
